@@ -1,10 +1,12 @@
 package com.github.finatra.swagger
 
-import com.twitter.finatra.{Controller, Request, ResponseBuilder}
+import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.{Response, Request}
+import com.twitter.finatra.http.response.ResponseBuilder
 import com.twitter.util.Future
 import com.wordnik.swagger.models.parameters.{BodyParameter, PathParameter, QueryParameter}
 import com.wordnik.swagger.models.properties.RefProperty
-import com.wordnik.swagger.models.{Operation, RefModel, Response}
+import com.wordnik.swagger.models.{Operation, RefModel, Response => SwaggerResponse}
 import com.wordnik.swagger.util.Json
 
 import scala.reflect.runtime.universe._
@@ -19,37 +21,37 @@ trait SwaggerSupport {
     api.registerOperation(path, method, operation)
   }
 
-  def post(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def post(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "post", doc)
     self.post(path)(callback)
   }
 
-  def get(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def get(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "get", doc)
     self.get(path)(callback)
   }
 
-  def put(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def put(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "put", doc)
     self.put(path)(callback)
   }
 
-  def patch(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def patch(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "patch", doc)
     self.patch(path)(callback)
   }
 
-  def delete(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def delete(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "delete", doc)
     self.delete(path)(callback)
   }
 
-  def head(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def head(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "head", doc)
     self.head(path)(callback)
   }
 
-  def options(path: String, doc: Operation)(callback: (Request) => Future[ResponseBuilder]): Unit = {
+  def options(path: String, doc: Operation)(callback: (Request) => Future[Response]): Unit = {
     addOperation(path, "options", doc)
     self.options(path)(callback)
   }
@@ -121,7 +123,7 @@ trait SwaggerSupport {
       }
     }
 
-    val param = new Response()
+    val param = new SwaggerResponse()
       .description(description)
       .schema(api.registerModel[T])
 

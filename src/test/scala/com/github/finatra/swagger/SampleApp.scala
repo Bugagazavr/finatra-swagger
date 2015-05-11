@@ -1,13 +1,20 @@
 package com.github.finatra.swagger
 
-import com.twitter.finatra.FinatraServer
+import com.twitter.finatra.http.HttpServer
+import com.twitter.finatra.http.routing.HttpRouter
 
-object SampleApp extends FinatraServer {
+object SampleAppMain extends SampleApp {
   FinatraSwagger.registerInfo(
     description = "The Student / Course management API, this is a sample for swagger document generation",
     version = "1.0.1",
     title = "Student / Course Management API")
+}
 
-  register(new SwaggerController())
-  register(new SampleController)
+
+class SampleApp extends HttpServer {
+  override def configureHttp(router: HttpRouter) {
+    router
+      .add[SwaggerController]
+      .add[SampleController]
+  }
 }

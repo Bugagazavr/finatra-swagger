@@ -2,7 +2,8 @@ package com.github.finatra.swagger
 
 import java.util.Date
 
-import com.twitter.finatra.Controller
+import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Request
 
 case class Address(street: String, zip: String)
 
@@ -21,10 +22,10 @@ class SampleController extends Controller with SwaggerSupport {
       response[Student](200, "the student object",
         example = Some(Student("tom", Sex.Male, 4, Address("california street", "94111"))))
       response(404, "the student is not found")
-    }) { request =>
-    val id = request.routeParams("id")
+    }) { request: Request =>
+    val id = request.params.get("id")
 
-    render.json(Student("tom", Sex.Male, 4, Address("california street", "94111"))).toFuture
+    response.ok.json(Student("tom", Sex.Male, 4, Address("california street", "94111"))).toFuture
   }
 
   post("/students",
@@ -37,7 +38,7 @@ class SampleController extends Controller with SwaggerSupport {
     }) { request =>
     val student = request.contentString
 
-    render.ok.toFuture
+    response.ok.toFuture
   }
 
   get("/students",
@@ -47,7 +48,7 @@ class SampleController extends Controller with SwaggerSupport {
       response[Array[String]](200, "the student ids")
       response(500, "internal error")
     }) { request =>
-    render.json(Array("student1", "student2")).toFuture
+    response.ok.json(Array("student1", "student2")).toFuture
   }
 
   get("/courses",
@@ -57,7 +58,7 @@ class SampleController extends Controller with SwaggerSupport {
       response[Array[String]](200, "the courses ids")
       response(500, "internal error")
     }) { request =>
-    render.json(Array("course1", "course2")).toFuture
+    response.ok.json(Array("course1", "course2")).toFuture
   }
 
   get("/courses/:id",
@@ -68,7 +69,7 @@ class SampleController extends Controller with SwaggerSupport {
       response[Course](200, "the courses detail")
       response(500, "internal error")
     }) { request =>
-    render.json(Course("calculation", "math", 20)).toFuture
+    response.ok.json(Course("calculation", "math", 20)).toFuture
   }
 
   get("/courses/:courseId/student/:studentId",
@@ -80,6 +81,6 @@ class SampleController extends Controller with SwaggerSupport {
       response[Boolean](200, "true / false")
       response(500, "internal error")
     }) { request =>
-    render.json(true).toFuture
+    response.ok.json(true).toFuture
   }
 }

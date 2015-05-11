@@ -1,19 +1,18 @@
 package com.github.finatra.swagger
 
-import com.twitter.finatra.Controller
-import com.wordnik.swagger.util.Json
+import com.twitter.finatra.http.Controller
+import com.twitter.finagle.http.Request
 
 class SwaggerController(docPath: String = "/api-docs") extends Controller {
-  get(docPath) { request =>
+  get(docPath) { request: Request =>
     val swagger = FinatraSwagger.swagger
 
-    render.body(Json.mapper.writeValueAsString(swagger))
-      .contentType("application/json").toFuture
+    response.ok.json(swagger).toFuture
   }
 
-  get(docPath + "/ui/*") { request =>
-    val res = request.path.replace(docPath + "/ui/", "")
+  get(docPath + "/ui/:*") { request: Request =>
+    val res = request.params.get("*")
 
-    render.static(s"swagger-ui/${res}").toFuture
+    response.ok.file("swagger-ui/%s".format(res))
   }
 }
