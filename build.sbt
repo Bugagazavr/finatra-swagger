@@ -1,10 +1,12 @@
 name := "finatra-swagger"
 
+organization := "com.github.finatra"
+
 version := "0.1"
 
-scalaVersion:="2.11.1"
+scalaVersion:="2.11.6"
 
-crossScalaVersions := Seq("2.10.0", "2.11.0")
+crossScalaVersions := Seq("2.11.6")
 
 resolvers ++= Seq(
   "Twitter" at "http://maven.twttr.com",

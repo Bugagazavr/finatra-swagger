@@ -9,6 +9,7 @@ import scala.reflect.runtime._
 import scala.collection.JavaConverters._
 
 object FinatraSwagger {
+  var path = "/api-docs"
   private[this] val _swagger = new Swagger
 
   def registerModel[T: TypeTag]: Property = {
@@ -28,7 +29,6 @@ object FinatraSwagger {
       schema
     }
   }
-
 
   private[this] val finatraRouteParamter = ":(\\w+)".r
   def convertPath(path: String): String = {
